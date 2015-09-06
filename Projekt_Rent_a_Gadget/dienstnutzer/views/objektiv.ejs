@@ -1,0 +1,249 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title><%= objektiv.besitzer %>'s Objektiv</title>
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"> <!-- load fontawesome -->
+    
+        <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+        <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+        
+        <script>
+            $(document).ready(function(){
+                $("#verleih").submit(function(event){
+                    event.preventDefault();
+                    
+                    var updateObjektiv = {
+                        ausleiher: $("#ausleiher").val(),
+                        zeitraum_von: $("#zeitraum_von").val(),
+                        zeitraum_bis: $("#zeitraum_bis").val(),
+                        hersteller: $("#hersteller").val(),
+                        modell: $("#modell").val(),
+                        typ: $("#typ").val(),
+                        kompatibel: $("#kompatibel").val(),
+                        einsatz: $("#einsatz").val(),
+                        von: $("#von").val(),
+                        bis: $("#bis").val(),
+                        verfugbar: "zurzeit vergriffen"
+                    };
+                    
+                    var oID = $("#oid").val();
+                    
+                    $.ajax({
+                        type: 'GET',
+                        host: 'localhost',
+                        port: 3001,
+                        url: '/users',
+                        data: {
+                            u_id: 'val1',
+                            username: 'val2',
+                            passwort: 'val3'
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            var temp = false;
+                            $.each(data, function(indes, element){
+                                if(element.username === $('#username').val() && element.passwort == $('#passwort').val()){
+                                    temp = true;
+                                }
+                            });
+                            if(temp == true){
+                                
+                                $.ajaxSetup({
+                                    contentType: "application/json; charset=utf-8"
+                                });
+                                
+                                $.ajax({
+                                    type: 'PUT',
+                                    host: 'localhost',
+                                    port: 3001,
+                                    url: '/objektiv/' + oID,
+                                    data: JSON.stringify(updateObjektiv),
+                                    success: function(data){
+                                        alert("Objektiv wurde ausgeliehen!");
+                                    }
+                                }).fail(function(e){
+                                    alert("ein Fehler ist aufgetreten");
+                                });
+                                event.preventDefault();
+                            } else {
+                                alert("Username und/oder Passwort wurden falsch eingegeben!");
+                            }
+                        }
+                    }).fail(function(data){
+                        alert("failure");
+                    });
+                });
+            
+            });
+            /*
+            
+            var updateObjektiv = {
+                                            o_id: <% objektiv.o_id %> ,
+                                            hersteller: <% objektiv.hersteller %> ,
+                                            besitzer: <% objektiv.besitzer %> ,
+                                            modell: <% objektiv.modell %>,
+                                            typ : <% objektiv.typ %>,
+                                            kompatibel: <% objektiv.kompatibel %>,
+                                            einsatz: <% objektiv.einsatz %> ,
+                                            von: <% objektiv.von %>,
+                                            bis: <% objektiv.bis %>,
+                                            verfugbar: 'zurzeit vergriffen'
+                                        };
+                    var o_id = <% objektiv.o_id %>;
+                    
+             $.ajaxSetup({
+                                            contentType: "application/json; charset=utf-8"
+                                        });
+                                        $.ajax({
+                                            type: 'PUT',
+                                            host: 'localhost',
+                                            url: '/updateObjektiv/' + o_id,
+                                            port: 3000,
+                                            data: JSON.stringify(updateObjektiv),
+                                            success: function(data){
+                                                alert("Verfügbarkeit auf 'zurzeit vergriffen' gesetzt");
+                                            }
+                                        }).fail(function(e){
+                                            alert("PUT METHODE KONNTE BRACHTE FEHLER!");
+                                        });
+            */
+            /*
+            $('#rezension').submit(function(event){
+                event.preventDefault();
+                
+                var leih_id = '';
+                var element = '';
+                var temp2 = false;
+                var temp3 = false;
+                
+                $.ajax({
+                    type: 'GET',
+                    host: 'localhost',
+                    port: 3001,
+                    url: '/users',
+                    data: {
+                        u_id: 'val1',
+                        username: 'val2',
+                        passwort: 'val3'
+                    },
+                    dataType: 'json',
+                    success: function(data){
+                        $.each(data, function(index, element){
+                            if(element.username === $('#username1').val() && element.passwort == $('#passwort1').val()){
+                                temp2 = true;
+                            }
+                        });
+                        if(temp2 == true){
+                            var leih_id = '';
+                            $.ajax({
+                                type: 'GET',
+                                host: 'localhost',
+                                port: 3001,
+                                url: '/ausleihen',
+                                data: {
+                                    leih_id: 'val1',
+                                    o_id: 'val2',
+                                    ausleiher: 'val3',
+                                    besitzer: 'val4',
+                                    zeitraum_von: 'val5',
+                                    zeitraum_bis: 'val6',
+                                    text: 'val7'
+                                },
+                                dataType: 'json',
+                                success: function(data){
+                                    
+                                    alert("SUCCESS");
+                                    
+                                    alert("ES WIRD GEPRÜFT, OB USER AUCH DAS EQUIPMENT AUSGELIEHEN HAT!");
+                                    
+                                    $.each(data, function(index, element){
+                                        
+                                        if(element.ausleiher === $('#username1').val()){
+                                            temp3 = true;
+                                            leih_id = element.leih_id;
+                                        }
+                                    });
+                                    if(temp3 == true) {
+                                        $.ajaxSetup({
+                                            contentType: "application/json; charset=utf-8"
+                                        });
+                                        $.ajax({
+                                            type: 'PUT',
+                                            host: 'localhost',
+                                            port: 3001,
+                                            url: '/ausleihen/' + leih_id,
+                                            data: JSON.stringify($('#text').val()),
+                                            success: function(data){
+                                                alert("Es wurde eine Rezession angelegt");
+                                            }
+                                        }).fail(function(e){
+                                            alert("Fehler beim Putten");
+                                        });
+                                        event.preventDefault();
+                                    } else {
+                                        alert("Sie sind nicht berechtigt diese Rezession zu schreiben! -- Sie haben dieses Objektiv nie ausgeliehen!");
+                                    }
+                                }
+                            }).fail(function(data){
+                                alert("failure bei GET ausleihen!");
+                            });
+                        } else {
+                            alert("Username und/oder Passwort wurden falsch eingegeben");
+                        }
+                    }
+                }).fail(function(e){
+                    alert("failure bei GET Users");
+                });
+            });
+            */
+        </script>
+        
+    </head>
+    <body>
+                <div class="jumbotron">
+                <h1><span class="fa fa-hand-spock-o"></span><%= objektiv.besitzer %>'s <%= objektiv.hersteller %>-Objektiv</h1>
+        </div>
+            <span id="uid"><%= objektiv.u_id %></span> USER ID
+            <span id="oid"><%= objektiv.o_id %></span> OBJEKTIV ID
+            <span id="hersteller"><%= objektiv.hersteller %></span>
+            <span id="modell"></p><%= objektiv.modell %></span>
+            <span id="typ"><%= objektiv.typ %></span>
+            <span id="kompatibel"><%= objektiv.kompatibel %></span>
+            <span id="einsatz"><%= objektiv.einsatz %></span>
+            <span id="von"><%= objektiv.von %></span>
+            <span id="bis"><%= objektiv.bis %></span>
+        
+            <hr>
+            
+            <div class="col-sm-6">
+                <h2>Besitzer kann Objektiv verleihen</h2>
+                <form id="verleih">
+                    <div class="form-group">
+                        <label>An folgenden User:</label>
+                        <input type="text" class="form control" id="ausleiher">
+                    </div>
+                    <div class="form-group">
+                        <label>Zeitraum von:</label>
+                        <input type="text" class="form control" id="zeitraum_von" value="TT.MM.JJJJ">
+                    </div>
+                    <div class="form-group">
+                        <label>Zeitraum bis:</label>
+                        <input type="text" class="form control" id="zeitraum_bis" value="TT.MM.JJJJ">
+                    </div>
+                    <hr>
+                    <p>Um den Verleih zu bestätigen, gib bitte deine Anmeldedaten ein (Besitzer)</p>
+                    <div class="form-group">
+                        <label>Username:</label>
+                        <input type="text" class="form control" id="username">
+                    </div>
+                    <div class="form-group">
+                        <label>Passwort:</label>
+                        <input type="password" class="form control" id="passwort">
+                    </div>
+                    <button type="submit" class="btn btn-warning btn-lg">Verleih bestätigen!</button>
+                </form>
+            </div>
+    </body>
+</html>

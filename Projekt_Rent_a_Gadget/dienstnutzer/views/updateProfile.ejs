@@ -1,0 +1,219 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8"> 
+         <title>Userprofil</title>
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"> <!-- load fontawesome -->
+    
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#updateUser").submit(function(event) {
+            event.preventDefault();
+            
+                var updateUser = {
+                    vorname: $("#vorname").val(),
+                    nachname: $("#nachname").val(),
+                    wohnort: $("#wohnort").val(),
+                    mail: $("#mail").val(),
+                    username: $("#username").val(),
+                    passwort: $("#passwort").val()
+                };
+                var uID = '';
+                $.ajax({
+				    type: 'GET',
+                    host: 'localhost',
+                    port: 3001,
+				    url: '/users',
+                    data: { u_id: 'val1',
+                            username: 'val2',
+                            passwort: 'val3'
+                            },
+                    dataType: 'json',
+                    success: function(data){
+                            var temp = false;
+                            $.each(data, function(index, element) {
+                                if(element.username === $('#username').val() && element.passwort == $('#passwort').val()){
+                                    temp = true;
+                                    uID = element.u_id;
+                            }
+                        });
+                        if(temp == true){ 
+                            $.ajaxSetup({
+                                contentType: "application/json; charset=utf-8"
+                            });
+
+                            $.ajax({
+                                type: 'PUT',
+                                host: 'localhost',
+                                port: 3001,
+                                url: '/users/' + uID,
+                                data: JSON.stringify(updateUser),
+                                success: function(data){
+                                    alert("Nutzerdaten wurden überarbeitet!");
+                                }
+                            }).fail(function(e){
+                                alert("fehler");
+                            });
+                            event.preventDefault();
+                        
+                        } else {
+                            alert("Username und/oder Passwort wurden falsch eingegeben!");
+                        }
+                    }
+                }).fail(function(data){
+                    alert("failure"); 
+                });
+            });
+    });
+        $('#deleteForm').submit(function(event){
+            var uID = '';
+            $ajax({
+                type: 'GET',
+                host: 'localhost',
+                port: 3001,
+                url: '/users',
+                data: {
+                    u_id: 'val1',
+                    username: 'val2',
+                    passwort: 'val3'
+                },
+                dataType: 'json',
+                success: function(data){
+                    var temp = false;
+                    $.each(data, function(index, element) {
+                                if(element.username === $('#username').val() && element.passwort == $('#passwort').val()){
+                                    temp = true;
+                                    uID = element.u_id;
+                            }
+                        });
+                        if(temp == true){ 
+                            $.ajaxSetup({
+                                contentType: "application/json; charset=utf-8"
+                            });
+
+                            $.ajax({
+                                type: 'DELETE',
+                                host: 'localhost',
+                                port: 3001,
+                                url: '/users/' + uID,
+                                data: JSON.stringify(updateUser),
+                                success: function(data){
+                                    alert("Der User wurde gelöscht!");
+                                }
+                            }).fail(function(e){
+                                alert("fehler");
+                            });
+                            event.preventDefault();
+                        
+                        } else {
+                            alert("Username und/oder Passwort wurden falsch eingegeben!");
+                        }
+                    }
+                }).fail(function(data){
+                    alert("failure"); 
+                });
+                }
+            })
+        });
+    </script>    
+    </head>
+    
+    <body>
+       <div class="container">
+      <!-- Fixed Nav Bar -->
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/" style="font-weight:bold; color:black; ">Rent a Gadget</a>
+                </div>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li><a href="#">&nbsp;&nbsp;</a></li>
+                        <li><a href="/kameras">Kameras</a></li>
+                        <li><a href="/objektive">Objektive</a></li>
+                        <li><a href="/beleuchtung">Beleuchtung</a></li>
+                        <li><a href="/drohnen">Drohnen</a></li>
+                        <li><a href="/halterungen">Halterungen</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="/postequipment">Equipment anbieten</a></li>
+                        <li><a href="/signup">Registriere Dich</a></li>
+                        <li><a href="/updateProfile">Deine Seite</a></li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+      <!--Fixed Nav Bar --> 
+        
+        <!-- Navbar einbinden -->
+        
+    <div class="col-sm-8 col-sm-offset-2">
+
+    <h1><span class="fa fa-sign-in"></span> Gib deine Änderungen an</h1>
+    <p>Bitte alle Felder ausfüllen!</p>
+    <!-- REGISTER FORM -->
+    
+    <form id="updateUser">
+        <div class="form-group">
+            <label>Vorname</label>
+            <input type="text" class="form-control" id="vorname">
+        </div>
+        <div class="form-group">
+            <label>Nachname</label>
+            <input type="text" class="form-control" id="nachname">
+        </div>
+        <div class="form-group">
+            <label>Wohnort</label>
+            <input type="text" class="form-control" id="wohnort">
+        </div>
+        <div class="form-group">
+            <label>E-Mail</label>
+            <input type="text" class="form-control" id="mail">
+        </div>
+        <hr>
+        <p>Gib deinen Usernamen und Passwort ein, um die Änderungen zu aktivieren!</p>
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" class="form-control" id="username">
+        </div>
+        <div class="form-group">
+            <label>Passwort</label>
+            <input type="password" class="form-control" id="passwort">
+        </div>
+
+        <button type="submit" class="btn btn-warning btn-lg">Änderungen absenden!</button>
+    </form>
+    <hr>
+    
+    <form id="deleteForm">
+    <p>Oder möchtest du deinen Account löschen?</p>
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" class="form-control" id="username">
+        </div>
+        <div class="form-group">
+            <label>Passwort</label>
+            <input type="password" class="form-control" id="passwort">
+        </div>
+
+        <button type="submit" class="btn btn-warning btn-lg">Profil löschen</button>
+    </form>
+    <hr>
+    <p>Or go <a href="/">home</a>.</p>
+    
+</div>
+        </div>
+    </body>
+</html>

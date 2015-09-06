@@ -1,0 +1,159 @@
+<html>
+    <head>
+        <meta charset="utf-8"> 
+         <title>Userprofil</title>
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"> <!-- load fontawesome -->
+    
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#updateUser").submit(function(event) {
+            event.preventDefault();
+                var Uid = '';
+                
+                
+                $.ajax({
+                    type: 'GET',
+                    host: 'localhost',
+                    port: 3001,
+                    url: '/users',
+                    data: { u_id: 'val1',
+                            username: 'val2',
+                            passwort: 'val3'
+                            },
+                    dataType: 'json',
+                    success: function(data){
+                            var temp = false;
+                            $.each(data, function(index, element) {
+                                if(element.username === $('#username').val() && element.passwort == $('#passwort').val()){
+                                    temp = true;
+                                    Uid = element.u_id;
+                            }
+                        });
+                        var newKamera = {
+                            hersteller: $("#hersteller").val(),
+                            modell: $("#modell").val(),
+                            typ: $("#typ").val(),
+                            kompatibel: $("#kompatibel").val(),
+                            einsatz: $("#einsatz").val(),
+                            verfugbar: $("#verfugbar").val(),
+                            u_id: Uid
+                        };
+                        if(temp == true){ 
+                            $.ajaxSetup({
+                                contentType: "application/json; charset=utf-8"
+                            });
+
+                            $.ajax({
+                                type: 'POST',
+                                host: 'localhost',
+                                port: 3001,
+                                url: '/postkamera',
+                                data: JSON.stringify(newKamera),
+                                success: function(data){
+                                    alert("Kamera wurden angelegt!");
+                                }
+                            }).fail(function(e){
+                                alert("fehler");
+                            });
+                            event.preventDefault();
+                        
+                        } else {
+                            alert("Username und/oder Passwort wurden falsch eingegeben!");
+                        }
+                    }
+                }).fail(function(data){
+                    alert("failure"); 
+                });
+            });
+    });
+    </script>    
+    </head>
+    
+    <body>
+        <div class="container">
+        <!-- Fixed Nav Bar -->
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/" style="font-weight:bold; color:black; ">Rent a Gadget</a>
+                </div>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li><a href="#">&nbsp;&nbsp;</a></li>
+                        <li><a href="/kameras">Kameras</a></li>
+                        <li><a href="/objektive">Objektive</a></li>
+                        <li><a href="/beleuchtung">Beleuchtung</a></li>
+                        <li><a href="/drohnen">Drohnen</a></li>
+                        <li><a href="/halterungen">Halterungen</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="/postequipment">Equipment anbieten</a></li>
+                        <li><a href="/signup">Registriere Dich</a></li>
+                        <li><a href="/updateProfile">Deine Seite</a></li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+      <!--Fixed Nav Bar -->
+        
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Kamera anbieten</h1>
+        <p>Gib alle nötigen Datenfelder am, um eine Kamera anzulegen!</p>
+      </div>
+    </div>
+        
+        <div class="col-sm-8 col-sm-offset-2">
+    
+    <!-- REGISTER FORM -->
+    
+    <form id="updateUser">
+        <div class="form-group">
+            <label>Hersteller</label>
+            <input type="text" class="form-control" id="hersteller">
+        </div>
+        <div class="form-group">
+            <label>Modell</label>
+            <input type="text" class="form-control" id="modell">
+        </div>
+        <div class="form-group">
+            <label>Typ</label>
+            <input type="text" class="form-control" id="typ">
+        </div>
+        <div class="form-group">
+            <label>megapixel</label>
+            <input type="text" class="form-control" id="megapixel">
+        </div>
+        <hr>
+        <p>Geben Sie ihren Usernamen und Passwort ein, um das Objektiv anzulegen!</p>
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" class="form-control" id="username">
+        </div>
+        <div class="form-group">
+            <label>Passwort</label>
+            <input type="password" class="form-control" id="passwort">
+        </div>
+
+        <button type="submit" class="btn btn-warning btn-lg">Kamera anlegen!</button>
+    </form>
+    <hr>
+
+    <p>Or go <a href="/">home</a>.</p>
+    
+</div>
+        </div>
+    </body>
+</html>

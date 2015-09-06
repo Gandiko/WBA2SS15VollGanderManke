@@ -1,0 +1,154 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8"> 
+         <title>Userprofil</title>
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"> <!-- load fontawesome -->
+    
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    
+    <script type="text/javascript">
+        $(document).ready(function(){
+            
+            $.ajax({
+                type: 'GET',
+                host: 'localhost',
+                port: 3001,
+                url: 'objektive/',
+                data: {
+                        ausleiher: 'val1',
+                        zeitraum_von: 'val2',
+                        zeitraum_bis: 'val3',
+                        hersteller: 'val4',
+                        modell: 'val5',
+                        typ: 'val6',
+                        kompatibel: 'val7',
+                        einsatz: 'val8',
+                        von: 'val9',
+                        bis: 'val10',
+                        verfugbar: 'val11'
+                },
+                dataType: 'json',
+                success: function(data){
+                        $("#ausleiher").val(data.ausleiher);
+                        $("#zeitraum_von").val(data.zeitraum_von);
+                        $("#zeitraum_bis").val(data.zeitraum_bis);
+                        $("#hersteller").val(data.hersteller);
+                        $("#modell").val(data.modell);
+                        $("#typ").val(data.typ);
+                        $("#kompatibel").val(data.kompatibel);
+                        $("#einsatz").val(data.einsatz);
+                        $("#von").val(data.von);
+                        $("#bis").val(data.bis);
+                        $("#verfugbar").val(data.verfugbar);
+                    }
+            });
+            
+            var updateObjektiv = {
+                        ausleiher: $("#ausleiher").val(),
+                        zeitraum_von: $("#zeitraum_von").val(),
+                        zeitraum_bis: $("#zeitraum_bis").val(),
+                        hersteller: $("#hersteller").val(),
+                        modell: $("#modell").val(),
+                        typ: $("#typ").val(),
+                        kompatibel: $("#kompatibel").val(),
+                        einsatz: $("#einsatz").val(),
+                        von: $("#von").val(),
+                        bis: $("#bis").val(),
+                        verfugbar: "zurzeit vergriffen"
+                    };
+                $("#verleih").submit(function(event){
+                    event.preventDefault();
+                    
+                    
+                    
+                    var oID = $("#oid").val();
+                    
+                    $.ajax({
+                        type: 'GET',
+                        host: 'localhost',
+                        port: 3001,
+                        url: '/users',
+                        data: {
+                            u_id: 'val1',
+                            username: 'val2',
+                            passwort: 'val3'
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            var temp = false;
+                            $.each(data, function(indes, element){
+                                if(element.username === $('#username').val() && element.passwort == $('#passwort').val()){
+                                    temp = true;
+                                }
+                            });
+                            if(temp == true){
+                                
+                                $.ajaxSetup({
+                                    contentType: "application/json; charset=utf-8"
+                                });
+                                
+                                $.ajax({
+                                    type: 'PUT',
+                                    host: 'localhost',
+                                    port: 3001,
+                                    url: '/objektiv/' + oID,
+                                    data: JSON.stringify(updateObjektiv),
+                                    success: function(data){
+                                        alert("Objektiv wurde ausgeliehen!");
+                                    }
+                                }).fail(function(e){
+                                    alert("ein Fehler ist aufgetreten");
+                                });
+                                event.preventDefault();
+                            } else {
+                                alert("Username und/oder Passwort wurden falsch eingegeben!");
+                            }
+                        }
+                    }).fail(function(data){
+                        alert("failure");
+                    });
+                });
+            
+            });
+    </script>    
+    </head>
+    
+    <body>
+        <div class="jumbotron">
+        </div>
+        
+            <hr>
+            
+            <div class="col-sm-6">
+                <h2>Besitzer kann Objektiv verleihen</h2>
+                <form id="verleih">
+                    <div class="form-group">
+                        <label>An folgenden User:</label>
+                        <input type="text" class="form control" id="ausleiher">
+                    </div>
+                    <div class="form-group">
+                        <label>Zeitraum von:</label>
+                        <input type="text" class="form control" id="zeitraum_von" value="TT.MM.JJJJ">
+                    </div>
+                    <div class="form-group">
+                        <label>Zeitraum bis:</label>
+                        <input type="text" class="form control" id="zeitraum_bis" value="TT.MM.JJJJ">
+                    </div>
+                    <hr>
+                    <p>Um den Verleih zu bestätigen, gib bitte deine Anmeldedaten ein (Besitzer)</p>
+                    <div class="form-group">
+                        <label>Username:</label>
+                        <input type="text" class="form control" id="username">
+                    </div>
+                    <div class="form-group">
+                        <label>Passwort:</label>
+                        <input type="password" class="form control" id="passwort">
+                    </div>
+                    <button type="submit" class="btn btn-warning btn-lg">Verleih bestätigen!</button>
+                </form>
+            </div>
+    </body>
+</html>
