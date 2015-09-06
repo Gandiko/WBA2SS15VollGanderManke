@@ -1,0 +1,25 @@
+{
+   "Profil":[
+      {
+         "name":"Gander",
+         "vorname": "Nikolas",
+         "geburtsdatum":"13.06.1992",
+         "alter":22,
+          "typ":"Musiker"
+      },
+      {    
+         "name":"Voll",
+         "vorname": "Jacqueline",
+         "geburtsdatum":"24.07.1992",
+         "alter":22,
+          "typ":"Veranstalter"
+      },
+      {
+         "name":"Manke",
+         "vorname": "Meike",
+         "geburtsdatum":"23.12.1990",
+         "alter":24,
+          "typ": "Security"
+      }
+   ]
+}
